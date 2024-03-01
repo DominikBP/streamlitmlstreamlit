@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 from functions import *
 from streamlit_super_slider import st_slider
 
-
+#
 st.set_page_config(
     layout="wide",
     page_title="Cutoffenergy Predictor from model",
