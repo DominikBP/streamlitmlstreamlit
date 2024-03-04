@@ -473,6 +473,7 @@ if runname:
     # st.components.v1.html(pyg_html, height=1000, scrolling=True)
 
     ###### SHAP #####
+    st.subheader("Lot's of Shap plots")
     fig = plt.figure()
     plt.figure().clear()
     plt.close()
