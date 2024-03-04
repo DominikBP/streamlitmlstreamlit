@@ -83,6 +83,10 @@ class PredModel():
 
         for index, run in runs.iterrows():
             #print (run['artifact_uri'])
+            logged_model = 'runs:data/model'
+
+            # # Load model as a PyFuncModel.
+            # loaded_model = mlflow.pyfunc.load_model(logged_model)
             logged_model = run['artifact_uri'] +"/"+run['artifact_path']
             print (logged_model)
             loaded_model = mlflow.pyfunc.load_model(logged_model)
@@ -97,11 +101,11 @@ class PredModel():
         runs = self.runs
         # iterate each run and get dataset.xlsx path / set artifact path in run array/list
         for index, run in runs.iterrows():
-            training_excel_location = run['artifact_uri']+"/dataset/dataset.xlsx"
+            #training_excel_location = run['artifact_uri']+"/dataset/dataset.xlsx"
             ######## ToDo achtung hardcoded ###################
             # 
             #df = pd.read_excel(training_excel_location) 
-            df = pd.read_excel('/home/dominik/Research-Incubator/train/artifacts/28/1a6a5c0bba0f48478ac9c9ed5a4cdf9e/artifacts/dataset/dataset.xlsx') 
+            df = pd.read_excel('data/dataset.xlsx') 
             #### hardcoded
             df.drop(df.columns[0], axis=1, inplace=True) # lösche index spalte von erzeugter excel
             dataset_dict[run.run_id] = df

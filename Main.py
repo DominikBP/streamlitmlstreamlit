@@ -8,7 +8,6 @@ from streamlit_shap import st_shap
 import pickle
 import pandas as pd
 import sys
-sys.path.append('../train')
 import config  
 import features as train_features
 from PredModel import PredModel
