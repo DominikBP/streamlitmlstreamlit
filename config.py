@@ -8,7 +8,7 @@ import pandas as pd
 EXPERIMENT_NAME = "StreamlitDemo"
 #%% get data from data files
 datafile1 = 'data/data_incl_source.xlsx'
-datafile2 = '/data/Datensammlung_update.xlsx'
+datafile2 = 'data/Datensammlung_update.xlsx'
 
 data1 = pd.read_excel(datafile1)
 data2 = pd.read_excel(datafile2)

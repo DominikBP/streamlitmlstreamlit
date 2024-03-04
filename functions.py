@@ -1,18 +1,14 @@
 import pickle
 import pandas as pd
 import sys
-sys.path.append('../')
-import train.config as config
-from train.PredModel import PredModel
+import config
+import PredModel
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
 import pandas as pd
 from plotly.subplots import make_subplots
 import sys
-import shap
-import keras
-import math
 import mlflow
 import numpy as np
 from sklearn.metrics import mean_squared_error
