@@ -83,13 +83,4 @@ y_test_raw = y_test_raw.drop('labels', axis=1)
 data_wo_outliers = data.loc[data['labels'] != -1]
 data_wo_outliers = data_wo_outliers.drop('labels', axis=1)
 data = data.drop('labels', axis=1)
-
-#%% save data to excel
-describe_filename = f"/home/dominik/Research-Incubator/train/excel/{config.EXPERIMENT_NAME}_DescribeFeatures_filter_{str_ul}-{str_ll}"
-dataset_filename = f"/home/dominik/Research-Incubator/train/excel/{config.EXPERIMENT_NAME}_Dataset_filter_{str_ul}-{str_ll}"
-
-data.describe().transpose().to_excel(describe_filename+".xlsx")
-data.describe().transpose().to_html(describe_filename+".html")
-data.to_excel(dataset_filename+".xlsx")
-data.to_excel("/home/dominik/Research-Incubator/train/dataset.xlsx")
 # %%
