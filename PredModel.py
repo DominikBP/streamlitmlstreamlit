@@ -30,28 +30,28 @@ class PredModel():
 
     def quickEval(self):
         self.loadData()
-        self.getRuns()
+        #self.getRuns()
         self.getModels()
         self.getPredictions()
         self.plot()
 
     def getTrainFeatures(self, run):
-        features = list(run['params.Features'].replace("'", "").strip("][").split(", "))
-        features.remove('cutofenergy') if 'cutofenergy' in features else ""
+        features = 	['cutoffenergy', 'energy', 'pulsewidth', 'spotsize', 'targetthickness']
+        features.remove('cutoffenergy') if 'cutoffenergy' in features else ""
         return features
 
     def getRuns(self, filter_string="", exclude_feature=""):
         """_summary_
         """        
         #get runs
-        mlflow.set_tracking_uri('http://localhost:5000')
+        # mlflow.set_tracking_uri('http://localhost:5000')
         experiment_name = self.exp
-        if self.debug == False:
-            print("debug=false")
-            runs = mlflow.search_runs(experiment_names=[experiment_name], filter_string=filter_string)
-            #print (runs)
-        else:
-            runs = mlflow.search_runs(experiment_names=[experiment_name], filter_string=filter_string, max_results=3)
+        # if self.debug == False:
+        #     print("debug=false")
+        #     runs = mlflow.search_runs(experiment_names=[experiment_name], filter_string=filter_string)
+        #     #print (runs)
+        # else:
+        #     runs = mlflow.search_runs(experiment_names=[experiment_name], filter_string=filter_string, max_results=3)
 
         if exclude_feature:
             runs = runs[~runs["params.Features"].str.contains(exclude_feature, na=False)] #~inverts
@@ -62,35 +62,35 @@ class PredModel():
 
     def getModels(self):
         model_dict = collections.OrderedDict([])
-        runs = self.runs
-        # iterate each run and get model path / set artifact path in run array/list
-        for index, run in runs.iterrows():
-            artifact_uri = run['artifact_uri']
+        # runs = self.runs
+        # # iterate each run and get model path / set artifact path in run array/list
+        # for index, run in runs.iterrows():
+        #     artifact_uri = run['artifact_uri']
 
-            # get list of dirs in artifact path of run
-            listdir = os.listdir(artifact_uri)
-            # check if either .models or automl in artifact path listdir
-            # enter model "name" (foldername) into model column in runs
-            #print (str(run['tags.mlflow.log-model.history']))
-            #str_run = str(run['tags.mlflow.log-model.history']).strip("'<>() ").replace('\'', '\"')
-            #print (type(str_run))
-            str_run = str(run['tags.mlflow.log-model.history'])
-            #tags =  json.loads(str(run['tags.mlflow.log-model.history'])) # cast to str sehr wichtig, sonst TypeError: the JSON object must be str, bytes or bytearray, not NoneType
-                                    #tags.mlflow.log-model.history
-            tags =  json.loads(str_run)
-            artifact_path = tags[0]['artifact_path']
-            runs.loc[int(index), "artifact_path"] = artifact_path
+        #     # get list of dirs in artifact path of run
+        #     listdir = os.listdir(artifact_uri)
+        #     # check if either .models or automl in artifact path listdir
+        #     # enter model "name" (foldername) into model column in runs
+        #     #print (str(run['tags.mlflow.log-model.history']))
+        #     #str_run = str(run['tags.mlflow.log-model.history']).strip("'<>() ").replace('\'', '\"')
+        #     #print (type(str_run))
+        #     str_run = str(run['tags.mlflow.log-model.history'])
+        #     #tags =  json.loads(str(run['tags.mlflow.log-model.history'])) # cast to str sehr wichtig, sonst TypeError: the JSON object must be str, bytes or bytearray, not NoneType
+        #                             #tags.mlflow.log-model.history
+        #     tags =  json.loads(str_run)
+        #     artifact_path = tags[0]['artifact_path']
+        #     runs.loc[int(index), "artifact_path"] = artifact_path
 
-        for index, run in runs.iterrows():
+        #for index, run in runs.iterrows():
             #print (run['artifact_uri'])
-            logged_model = 'runs:data/model'
+        logged_model = 'data/model'
 
-            # # Load model as a PyFuncModel.
-            # loaded_model = mlflow.pyfunc.load_model(logged_model)
-            logged_model = run['artifact_uri'] +"/"+run['artifact_path']
-            print (logged_model)
-            loaded_model = mlflow.pyfunc.load_model(logged_model)
-            model_dict[run.run_id] = {'loaded_model':loaded_model,'run':run, 'logged_model':logged_model}
+        # # Load model as a PyFuncModel.
+        # loaded_model = mlflow.pyfunc.load_model(logged_model)
+        # logged_model = run['artifact_uri'] +"/"+run['artifact_path']
+        # print (logged_model)
+        loaded_model = mlflow.pyfunc.load_model(logged_model)
+        model_dict["1"] = {'loaded_model':loaded_model,'run':"run1", 'logged_model':logged_model}
 
         self.model_dict = model_dict
 
@@ -98,17 +98,17 @@ class PredModel():
         # ToDo: Umstrukturieren bzw. getRunID Methode schreiben, da in der Main.py nur für RunID aufgerufen....
         
         dataset_dict = collections.OrderedDict([])
-        runs = self.runs
+        #runs = self.runs
         # iterate each run and get dataset.xlsx path / set artifact path in run array/list
-        for index, run in runs.iterrows():
-            #training_excel_location = run['artifact_uri']+"/dataset/dataset.xlsx"
-            ######## ToDo achtung hardcoded ###################
-            # 
-            #df = pd.read_excel(training_excel_location) 
-            df = pd.read_excel('data/dataset.xlsx') 
-            #### hardcoded
-            df.drop(df.columns[0], axis=1, inplace=True) # lösche index spalte von erzeugter excel
-            dataset_dict[run.run_id] = df
+        #for index, run in runs.iterrows():
+        #training_excel_location = run['artifact_uri']+"/dataset/dataset.xlsx"
+        ######## ToDo achtung hardcoded ###################
+        # 
+        #df = pd.read_excel(training_excel_location) 
+        df = pd.read_excel('data/dataset.xlsx') 
+        #### hardcoded
+        df.drop(df.columns[0], axis=1, inplace=True) # lösche index spalte von erzeugter excel
+        dataset_dict["1"] = df
 
         self.dataset_dict = dataset_dict
         return dataset_dict
@@ -144,7 +144,7 @@ class PredModel():
             data_collection = self.data_collection
             # todo: create predictions for each loaded model! maybe in separate dict/collection...
             loaded_model = model_dict[model]['loaded_model']
-            features = self.getTrainFeatures(model_dict[model]['run'])
+            features = 	['cutoffenergy', 'energy', 'pulsewidth', 'spotsize', 'targetthickness']
             # mlflow.pyfunc.load_model(model)
             # get predictions for dataframe collection
             # and collect predictions for quantiles in prediction_collection{}

@@ -10,7 +10,7 @@ import pandas as pd
 import sys
 import config  
 import features as train_features
-from PredModel import PredModel
+import PredModel
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
@@ -37,7 +37,8 @@ st.set_page_config(
 #     expname = st.text_input('MLFlow experiment name', value=st.session_state.expname if 'expname' in st.session_state else '')
 #     runname = st.text_input('MLFlow run name', value=st.session_state.runname if 'runname' in st.session_state else '')
 #     st.write("***")
-#     col1, col2 = st.columns(2)
+with st.sidebar:
+    col1, col2 = st.columns(2)
 # st.session_state.runname = runname
 # runname = st.session_state.runname
 runname = "dummy"
@@ -53,11 +54,11 @@ if runname:
     # get datafile for "original" data points and min-max-Values for prediction
     datafile ="data/dataset.xlsx"
     #initiate class
-    pred = PredModel(datafile, expname, [0.15, 0.25, 0.75], debug = False)
+    pred = PredModel.PredModel(datafile, expname, [0.15, 0.25, 0.75], debug = False)
     pred.loadData()
-    pred.getRuns(
-        filter_string="attributes.run_name = '" + runname + "'"#agreeable-horse-725'"#'redolent-mole-530'"
-    )
+    # pred.getRuns(
+    #     filter_string="attributes.run_name = '" + runname + "'"#agreeable-horse-725'"#'redolent-mole-530'"
+    # )
 
     pred.getModels()
     # ToDo: Methode für RunID generieren....
@@ -81,21 +82,19 @@ if runname:
     logged_model = model_dict[model]['logged_model']
     st.session_state.logged_model = logged_model
 
-    mlalgorithm = model_dict[model]['run']['params.Algorithm']
+    mlalgorithm = "xgboost_stacking-monotone"#model_dict[model]['run']['params.Algorithm']
     st.session_state.mlalgorithm = mlalgorithm
 
-    mlframework = model_dict[model]['run']['params.Framework']
+    mlframework = "custom_sklearn_stacking-monotone" #model_dict[model]['run']['params.Framework']
     st.session_state.mlframework = mlframework
 
-    run = mlflow.get_run(model_dict[model]['run']['run_id'])
-    artifact_uri = run.info.artifact_uri
-    client = mlflow.MlflowClient()
+    run = "1"
+    #artifact_uri = run.info.artifact_uri
+#    client = mlflow.MlflowClient()
     ###### Sidebar with sliders ######
     with st.sidebar:
         # Smoother
         slider_smooth_power = st.slider("smoother power",min_value=1, max_value=200)
-        slider_smooth_weight = st.slider("smoother weight",min_value=0, max_value=100)
-
         # Control Monotonicity Weight if Stacking_Estimator "stacking-monotone" is algorithm in mlflow run
         if "stacking-monotone" in mlalgorithm:
             slider_monotone_weight = st.slider("monotonicity weight",min_value=0, max_value=100)
@@ -107,10 +106,10 @@ if runname:
     # reset index, da bei einigen csv read doppelte indexe vorkommen (wieso auch immer)
     # drop=True, da sonst alter index als neue spalte gespeichert wird
     # für debug drop=False und indexe vergleichen über st.write df in col 1 und col2 spalten unten
-    X_test = pd.read_csv(client.download_artifacts(run_id, "test_data/X_test.csv"), index_col=0).reset_index(drop=True)
-    y_test = pd.read_csv(client.download_artifacts(run_id, "test_data/y_test.csv"), index_col=0).reset_index(drop=True)
-    X_train = pd.read_csv(client.download_artifacts(run_id, "train_data/X_train.csv"), index_col=0).reset_index(drop=True)
-    y_train = pd.read_csv(client.download_artifacts(run_id, "train_data/y_train.csv"), index_col=0).reset_index(drop=True)
+    X_test = pd.read_csv("test_data/X_test.csv", index_col=0).reset_index(drop=True)
+    y_test = pd.read_csv("test_data/y_test.csv", index_col=0).reset_index(drop=True)
+    X_train = pd.read_csv("train_data/X_train.csv", index_col=0).reset_index(drop=True)
+    y_train = pd.read_csv("train_data/y_train.csv", index_col=0).reset_index(drop=True)
 
     st.session_state['X_test'] = X_test
 
@@ -128,9 +127,9 @@ if runname:
             y_pred = get_2d_predictions(mlalgorithm, X_test, loaded_model, 'energy', test=True, slider_monotone_weight=slider_monotone_weight)
             
             col2.metric('Current RMSE', format(mean_squared_error(y_test, y_pred, squared=False), '.3f'))
-            col1.metric('Model RMSE', format(model_dict[model]['run']['metrics.RMSE'], '.3f'))
+            col1.metric('Model RMSE', 0.0, '.3f')
         else:
-            col1.metric('Model RMSE', format(model_dict[model]['run']['metrics.RMSE'], '.3f'))
+            col1.metric('Model RMSE', 0.0, '.3f')
             y_pred = get_2d_predictions(mlalgorithm, train_features.X_test_raw, loaded_model, 'energy', test=True)
             col2.metric('RawTestSet RMSE', format(mean_squared_error(train_features.y_test_raw, y_pred, squared=False), '.3f'))
             y_pred = get_2d_predictions(mlalgorithm, train_features.X_test_wo_outliers, loaded_model, 'energy', test=True)
