@@ -7,12 +7,9 @@ import mlflow
 import os
 import sys
 import json
-import seaborn as sns
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
-import h2o
-import flaml
 
 pio.templates.default = "plotly_white"
 class PredModel():
