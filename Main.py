@@ -18,7 +18,6 @@ import pandas as pd
 from plotly.subplots import make_subplots
 import sys
 import shap
-import keras
 import math
 import mlflow
 import numpy as np
@@ -34,16 +33,17 @@ st.set_page_config(
     page_icon="🪟",
 )
 ##### Sidebar Model Selection
-with st.sidebar:
-    expname = st.text_input('MLFlow experiment name', value=st.session_state.expname if 'expname' in st.session_state else '')
-    runname = st.text_input('MLFlow run name', value=st.session_state.runname if 'runname' in st.session_state else '')
-    st.write("***")
-    col1, col2 = st.columns(2)
-st.session_state.runname = runname
-runname = st.session_state.runname
-
-st.session_state.expname = expname
-expname = st.session_state.expname
+# with st.sidebar:
+#     expname = st.text_input('MLFlow experiment name', value=st.session_state.expname if 'expname' in st.session_state else '')
+#     runname = st.text_input('MLFlow run name', value=st.session_state.runname if 'runname' in st.session_state else '')
+#     st.write("***")
+#     col1, col2 = st.columns(2)
+# st.session_state.runname = runname
+# runname = st.session_state.runname
+runname = "dummy"
+expname="expname"
+# st.session_state.expname = expname
+# expname = st.session_state.expname
 ##### Display "Landing Page" if no model selected
 if not runname or not expname:
     st.title('Enter experiment and model in sidebar')
