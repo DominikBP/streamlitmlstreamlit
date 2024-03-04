@@ -5,10 +5,7 @@ Merge files and clean features, convert units..
 import os
 import pandas as pd
 
-#%% get experiment name
-file = open("/home/dominik/Research-Incubator/train/config_exp_name.txt", "r")
-EXPERIMENT_NAME = file.read()
-print (EXPERIMENT_NAME)
+EXPERIMENT_NAME = "StreamlitDemo"
 #%% get data from data files
 datafile1 = os.path.join(os.path.dirname(os.getcwd()), 'data/data_incl_source.xlsx')
 datafile2 = os.path.join(os.path.dirname(os.getcwd()), 'data/Datensammlung_update.xlsx')

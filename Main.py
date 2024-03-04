@@ -52,7 +52,7 @@ if not runname or not expname:
 if runname:
 
     # get datafile for "original" data points and min-max-Values for prediction
-    datafile = "/home/dominik/Research-Incubator/train/artifacts/24/362cb183b18f48109e1497beebb00fed/artifacts/dataset/dataset.xlsx"
+    datafile = os.path.join(os.path.dirname(os.getcwd()), "data/dataset.xlsx")
     #initiate class
     pred = PredModel(datafile, expname, [0.15, 0.25, 0.75], debug = False)
     pred.loadData()
