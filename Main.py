@@ -32,6 +32,7 @@ st.set_page_config(
     page_title="Cutoffenergy Predictor from model",
     page_icon="🪟",
 )
+
 ##### Sidebar Model Selection
 # with st.sidebar:
 #     expname = st.text_input('MLFlow experiment name', value=st.session_state.expname if 'expname' in st.session_state else '')
@@ -165,10 +166,10 @@ if runname:
         x_targetthickness = st_slider(float(train_features.data.min(numeric_only=True)['targetthickness']) ,max_targetthickness)
     # calculate single prediction for display in sidebar
     # debug only
-    x_energy = 2.4
-    x_spotsize = 3.3
-    x_pulsewidth = 31.3
-    x_targetthickness = 635
+    # x_energy = 2.4
+    # x_spotsize = 3.3
+    # x_pulsewidth = 31.3
+    # x_targetthickness = 635
     # x_energy = 3
     # x_spotsize = 5.3
     # x_pulsewidth = 500
@@ -182,6 +183,7 @@ if runname:
                         })
     
     y = get_prediction(df_single_pred, mlalgorithm, loaded_model, slider_monotone_weight)
+
     if (type(y) == pd.DataFrame):
         single_prediction = y.values[0]
     elif  (type(y)) == np.ndarray:
